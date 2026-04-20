@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>판타지 소설 — 집필 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#f7f0e6;--sb:#2b1a0d;--sf:#ffffff;--sf2:#fdf5e8;
+  --bd:#e4d0b8;--bd2:#cdb899;
+  --acc:#bf4e1a;--acc-dim:rgba(191,78,26,.12);
+  --rose:#7c3214;--rose-dim:rgba(124,50,20,.10);
+  --amber:#c87a1a;--amber-dim:rgba(200,122,26,.10);
+  --green:#4a7c59;--blue:#3a5fa0;
+  --t:#2b1a0d;--td:#8a6a52;--tm:#b09a84;
+  --r:10px;--rs:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t)}
+a{color:inherit;text-decoration:none}
+/* sidebar light-text overrides (dark brown bg) */
+.sb{color:#f5e8d4}
+.sb-title{color:#faf3ea !important}
+.toc-group summary{color:#b09070 !important}
+.toc-group summary:hover{color:#faf3ea !important}
+.toc-arc-hd{color:#e07a3a !important}
+.toc-arc-range{color:#7a5a3e !important}
+.toc-ch{color:#b09070 !important}
+.toc-ch:hover{color:#faf3ea !important;background:rgba(255,255,255,.07) !important}
+.ch-done{color:#6b5040 !important}
+.ch-done:hover{color:#b09070 !important}
+.ch-next{color:#f5c89a !important;background:rgba(191,78,26,.2) !important;border-left-color:#bf4e1a !important}
+.ch-next:hover{background:rgba(191,78,26,.32) !important}
+.ch-next-badge{background:#bf4e1a !important}
+.ch-todo{color:#5a3d2c !important}
+.toc-more,.toc-empty{color:#5a3d2c !important}
+.toc-char{color:#b09070 !important}
+.toc-char:hover{color:#faf3ea !important;background:rgba(255,255,255,.07) !important}
+.tc-role{color:#5a3d2c !important}
+.sp-row{color:#b09070 !important}
+.sp-val{color:#faf3ea !important}
+.cta-sub{color:#7a5a44 !important}
+.sb .gb-rose{background:rgba(191,78,26,.25) !important;color:#f5c89a !important;border-color:rgba(191,78,26,.4) !important}
+.sb .gb-amber{background:rgba(200,122,26,.25) !important;color:#fcd87a !important;border-color:rgba(200,122,26,.4) !important}
+.sb .gb-violet{background:rgba(191,78,26,.2) !important;color:#f5c89a !important;border-color:rgba(191,78,26,.35) !important}
+
+/* ── LAYOUT ─────────────── */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ────────────── */
+.sb{width:240px;min-width:240px;height:100vh;background:var(--sb);
+  border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:20px 16px 14px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sb-title{font-family:'Noto Serif KR',serif;font-size:.95rem;font-weight:700;
+  color:var(--t);margin-bottom:6px;line-height:1.3}
+.gb{display:inline-block;font-size:.65rem;font-weight:600;padding:2px 8px;
+  border-radius:99px;margin-top:2px}
+.gb-rose  {background:var(--rose-dim);color:#e8793a;border:1px solid rgba(124,50,20,.35)}
+.gb-amber {background:var(--amber-dim);color:#c87a1a;border:1px solid rgba(200,122,26,.4)}
+.gb-violet{background:var(--acc-dim);color:#bf4e1a;border:1px solid rgba(191,78,26,.35)}
+
+/* mini progress in sidebar */
+.sb-prog{padding:10px 16px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sp-row{display:flex;justify-content:space-between;font-size:.72rem;color:var(--td);margin-bottom:5px}
+.sp-val{color:var(--t);font-weight:600}
+.sp-bg{background:var(--bd2);border-radius:99px;height:4px}
+.sp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#bf4e1a,#c87a1a)}
+
+/* TOC scroll area */
+.toc-scroll{flex:1;overflow-y:auto;padding:8px 0}
+.toc-scroll::-webkit-scrollbar{width:3px}
+.toc-scroll::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+
+/* details/summary toggle */
+details.toc-group{border-bottom:1px solid var(--bd)}
+details.toc-group summary{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  padding:10px 16px;font-size:.73rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--td);
+  user-select:none;transition:color .15s}
+details.toc-group summary::-webkit-details-marker{display:none}
+details.toc-group summary:hover{color:var(--t)}
+.toc-arr{font-size:.6rem;transition:transform .2s;flex-shrink:0}
+details[open] .toc-arr{transform:rotate(90deg)}
+.toc-body{padding:4px 0 8px}
+
+.toc-arc-hd{padding:4px 16px 2px;font-size:.68rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--acc);opacity:.7}
+.toc-arc-range{color:var(--td);font-weight:400}
+.toc-ch{display:block;padding:5px 16px 5px 24px;font-size:.78rem;color:var(--td);
+  cursor:pointer;transition:all .12s;border-left:2px solid transparent;margin-left:0}
+.toc-ch:hover{color:var(--t);background:var(--sf)}
+.ch-done{color:#6b6880;font-size:.75rem}
+.ch-done:hover{color:var(--td)}
+.ch-next{color:#f5c89a;font-weight:600;border-left-color:var(--acc);
+  background:rgba(191,78,26,.15);padding-left:12px}
+.ch-next:hover{background:rgba(191,78,26,.28)}
+.ch-next-badge{font-size:.6rem;background:var(--acc);color:#fff;
+  padding:1px 5px;border-radius:99px;margin-left:4px;font-weight:500}
+.ch-todo{color:var(--tm)}
+.toc-more{padding:3px 16px 3px 24px;font-size:.72rem;color:var(--tm)}
+.toc-empty{padding:8px 16px;font-size:.75rem;color:var(--tm)}
+.toc-char{display:flex;align-items:center;gap:8px;padding:5px 16px;
+  font-size:.78rem;color:var(--td);cursor:pointer;transition:all .12s}
+.toc-char:hover{color:var(--t);background:var(--sf)}
+.tc-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.main-av{background:linear-gradient(135deg,#bf4e1a,#e8793a)}
+.sub-av{background:linear-gradient(135deg,#7c3214,#c87a1a)}
+.tc-role{font-size:.65rem;color:var(--tm)}
+
+/* 단계 배지 & 정보 행 */
+.toc-step-label{flex:1;font-size:.73rem}
+.step-done{font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:3px;
+  background:rgba(74,124,89,.25);color:#4a7c59;flex-shrink:0}
+.step-todo{font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:3px;
+  background:rgba(90,61,44,.25);color:#9b7a5e;flex-shrink:0}
+.toc-info-row{display:flex;align-items:baseline;gap:5px;
+  padding:3px 16px 3px 24px;font-size:.74rem}
+.ti-k{color:#5a3d2c;flex-shrink:0;width:28px;font-size:.68rem}
+.ti-v{color:#b09070}
+.ti-v.dim{color:#5a3d2c}
+
+/* sidebar bottom CTA */
+.sb-cta{padding:12px 14px;border-top:1px solid var(--bd);flex-shrink:0}
+.cta-btn{display:block;width:100%;padding:10px;border-radius:var(--rs);
+  background:linear-gradient(135deg,#bf4e1a,#c87a1a);border:none;
+  color:#fff;font-size:.8rem;font-weight:600;cursor:pointer;text-align:center;
+  font-family:inherit;transition:opacity .15s}
+.cta-btn:hover{opacity:.85}
+.cta-sub{font-size:.68rem;color:var(--tm);text-align:center;margin-top:6px}
+
+/* ── MAIN ───────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* topbar */
+.topbar{height:52px;border-bottom:1px solid var(--bd);display:flex;
+  align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0}
+.topbar-title{font-family:'Noto Serif KR',serif;font-size:.9rem;font-weight:600;
+  display:flex;align-items:center;gap:8px}
+.topbar-r{font-size:.73rem;color:var(--td);display:flex;align-items:center;gap:12px}
+.updated-dot{width:6px;height:6px;border-radius:50%;background:#059669;flex-shrink:0}
+
+/* tabs */
+.tab-nav{display:flex;align-items:center;gap:2px;padding:10px 24px 0;
+  border-bottom:1px solid var(--bd);flex-shrink:0}
+.tab-btn{padding:7px 16px;border:none;background:transparent;color:var(--td);
+  font-size:.82rem;font-weight:500;cursor:pointer;border-radius:var(--rs) var(--rs) 0 0;
+  font-family:inherit;transition:all .15s;position:relative;bottom:-1px}
+.tab-btn:hover{color:var(--t);background:var(--sf)}
+.tab-btn.on{color:#2b1a0d;background:#fff;border:1px solid var(--bd);
+  border-bottom:1px solid #fff;font-weight:600}
+
+/* content area */
+.content{flex:1;overflow-y:auto;padding:20px 24px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.tab-pane{display:none;flex-direction:column;gap:16px}
+.tab-pane.on{display:flex}
+
+/* ── WRITING CARD ──────── */
+.wc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:20px 24px;display:flex;gap:28px;align-items:flex-start;
+  border-top:3px solid var(--acc);position:relative;overflow:hidden}
+.wc::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at 0% 0%,rgba(191,78,26,.07),transparent 60%);
+  pointer-events:none}
+.wc-left{flex-shrink:0;min-width:120px}
+.wc-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--acc);margin-bottom:6px}
+.wc-big{font-family:'Noto Serif KR',serif;font-size:2.8rem;font-weight:700;
+  line-height:1;color:var(--t);margin-bottom:4px}
+.wc-ch-title{font-size:.9rem;color:#bf4e1a;font-weight:500}
+.wc-right{flex:1}
+.wc-summary{font-size:.84rem;color:var(--td);line-height:1.7;margin-bottom:10px}
+.wc-tone{font-size:.78rem;color:var(--td);margin-bottom:6px;line-height:1.5}
+.wc-tone-lb{display:inline-block;font-size:.65rem;font-weight:600;
+  background:var(--acc-dim);color:#bf4e1a;padding:1px 6px;border-radius:4px;
+  margin-right:6px}
+.wc-footer{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.wc-goal{font-size:.75rem;color:var(--td);background:var(--sf2);
+  padding:4px 10px;border-radius:99px;border:1px solid var(--bd)}
+.wc-cmd{font-size:.75rem;background:#fdf5e8;color:#bf4e1a;padding:5px 12px;
+  border-radius:6px;border:1px solid var(--bd);cursor:pointer;
+  user-select:all;transition:background .15s;font-weight:500}
+.wc-cmd:hover{background:#f5e8d4}
+.done-wc{border-top-color:var(--green);flex-direction:column;align-items:center;
+  text-align:center;padding:32px}
+.done-wc .wc-icon{font-size:2rem;margin-bottom:8px}
+.done-wc .wc-big{font-size:1.8rem}
+.done-wc .wc-sub{color:var(--td);font-size:.85rem;margin-top:6px}
+
+/* ── KPI CARDS ─────────── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);
+  padding:18px 18px 14px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ki::after{background:linear-gradient(90deg,#bf4e1a,#e8793a)}
+.kb::after{background:linear-gradient(90deg,#c87a1a,#f0aa4a)}
+.kg::after{background:linear-gradient(90deg,#5a8c4a,#8ab87a)}
+.ka::after{background:linear-gradient(90deg,#6b3a1e,#9b6a3a)}
+.kp::after{background:linear-gradient(90deg,#c44a38,#e87a6a)}
+.kpi-lb{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--td);margin-bottom:8px}
+.kpi-v{font-size:1.8rem;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-.02em}
+.kpi-s{font-size:.7rem;color:var(--td)}
+
+/* ── CARDS ──────────────── */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px}
+.mb{margin-bottom:0}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ct2{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--td)}
+.cs{font-size:.68rem;color:var(--tm)}
+.chart-box{min-height:200px}
+.g2{display:grid;grid-template-columns:240px 1fr;gap:14px}
+.g2w{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ── TABLE ──────────────── */
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;padding:0 10px 8px;font-size:.68rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--td);border-bottom:1px solid var(--bd)}
+tbody td{padding:9px 10px;font-size:.85rem;border-bottom:1px solid var(--bd)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--sf2)}
+.td-acc{color:var(--acc);font-weight:700;width:52px}
+.td-r{text-align:right;color:var(--td);width:68px}
+.td-d{color:var(--td);font-size:.76rem;width:90px}
+.empty-cell{text-align:center;color:var(--td);padding:28px}
+
+/* ── CHARACTER CARDS ─────── */
+.chars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.char-card{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rs);
+  padding:14px 16px}
+.sub-card{border-left:2px solid var(--rose)}
+.char-card:not(.sub-card){border-left:2px solid var(--acc)}
+.char-tpl{opacity:.35}
+.char-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.char-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.av-main{background:linear-gradient(135deg,#bf4e1a,#e8793a)}
+.av-sub{background:linear-gradient(135deg,#7c3214,#c87a1a)}
+.char-name{font-weight:600;font-size:.87rem}
+.char-role{font-size:.63rem;font-weight:600;padding:2px 7px;border-radius:99px;
+  display:inline-block;margin-top:2px}
+.role-main{background:var(--acc-dim);color:#bf4e1a}
+.role-sub{background:var(--rose-dim);color:#7c3214}
+.char-age{font-size:.68rem;color:var(--td)}
+.char-desc{font-size:.76rem;color:var(--td);line-height:1.5;margin-top:4px}
+.char-motiv{font-size:.72rem;color:var(--tm);line-height:1.4;margin-top:3px}
+.char-abs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ab{font-size:.65rem;padding:2px 7px;border-radius:99px;
+  background:var(--acc-dim);color:#bf4e1a;border:1px solid rgba(191,78,26,.25)}
+
+/* ── WORLD TAB ───────────── */
+.world-name{font-family:'Noto Serif KR',serif;font-size:1.1rem;font-weight:700;
+  margin-bottom:8px;color:#7c3214}
+.world-overview{font-size:.85rem;color:var(--td);line-height:1.7;margin-bottom:8px}
+.world-conflict{font-size:.8rem;color:var(--td);padding:9px 12px;background:var(--sf2);
+  border-radius:6px;border-left:2px solid var(--acc);line-height:1.5;margin-bottom:6px}
+.world-history,.world-culture{font-size:.78rem;color:var(--td);
+  padding:7px 10px;border-radius:6px;background:var(--sf2);margin-bottom:6px;line-height:1.5}
+.dim-p{color:var(--tm);font-size:.85rem}
+.si-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.si{background:var(--sf2);border-radius:6px;padding:9px 12px}
+.si-k{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--td);margin-bottom:2px}
+.si-v{font-size:.82rem;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag{font-size:.68rem;font-weight:500;padding:3px 9px;border-radius:99px;
+  background:var(--acc-dim);color:#bf4e1a;border:1px solid rgba(191,78,26,.3)}
+.info-block{background:var(--sf2);border-radius:var(--rs);padding:12px 14px;margin-top:12px}
+.info-block-title{font-size:.78rem;font-weight:600;margin-bottom:8px;color:var(--t)}
+.info-sub{font-size:.75rem;color:var(--td);margin-bottom:4px}
+.info-sub.lim{color:#c87a1a}
+.info-list{padding-left:14px;font-size:.78rem;color:var(--td);line-height:1.8}
+.loc-item,.fac-item{padding:6px 0;border-bottom:1px solid var(--bd)}
+.loc-item:last-child,.fac-item:last-child{border-bottom:none}
+.loc-name,.fac-name{font-size:.82rem;font-weight:600;margin-bottom:2px}
+.loc-desc,.fac-desc{font-size:.75rem;color:var(--td)}
+
+/* ── PLOT TAB ────────────── */
+.synopsis-text{font-size:.875rem;color:var(--td);line-height:1.8}
+.arc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.arc-card{background:var(--sf2);border-radius:var(--rs);padding:14px 16px}
+.arc-card-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.arc-dot-lg{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.arc-title{font-weight:600;font-size:.88rem}
+.arc-range-lg{font-size:.72rem;color:var(--td)}
+.arc-desc{font-size:.78rem;color:var(--td);line-height:1.5;margin-bottom:6px}
+.arc-events{padding-left:14px;font-size:.76rem;color:var(--td);line-height:1.7}
+.arc-dev{font-size:.74rem;color:#c87a1a;margin-top:6px;font-style:italic}
+/* chapter outline accordion */
+details.ol-item{border-bottom:1px solid var(--bd)}
+details.ol-item:last-child{border-bottom:none}
+details.ol-item summary.ol-summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:10px 0;font-size:.85rem;user-select:none}
+details.ol-item summary::-webkit-details-marker{display:none}
+.ol-num{color:var(--acc);font-weight:700;width:36px;flex-shrink:0}
+.ol-title{flex:1}
+.ol-arrow{font-size:.6rem;color:var(--td);transition:transform .2s}
+details.ol-item[open] .ol-arrow{transform:rotate(90deg)}
+.ol-body{padding:0 0 12px 46px}
+.ol-text{font-size:.82rem;color:var(--td);line-height:1.6;margin-bottom:6px}
+.ol-meta{font-size:.76rem;color:var(--tm);margin-top:4px}
+
+/* ── OUTPUT TAB ──────────── */
+.file-list{display:flex;flex-direction:column;gap:7px}
+.file-row{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--sf2);border-radius:var(--rs);border:1px solid var(--bd)}
+.fi{font-size:1rem}.fn{flex:1;font-size:.82rem;color:var(--td)}
+.fb{font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase}
+.fb.txt{background:var(--acc-dim);color:#bf4e1a}
+.fb.epub{background:var(--amber-dim);color:#c87a1a}
+.fb.pdf{background:rgba(74,124,89,.15);color:#4a7c59}
+.prog{margin-bottom:12px}
+.prog-lbl{display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:5px}
+.pn{color:var(--td)}.pv{color:var(--t);font-weight:600}
+.prog-bg{background:var(--bd2);border-radius:99px;height:5px}
+.prog-fill{height:100%;border-radius:99px}
+.cmd-ref{margin-top:14px;border-top:1px solid var(--bd);padding-top:12px}
+.cr-title{font-size:.7rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--td);margin-bottom:8px}
+.cr-item{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:.78rem;color:var(--td)}
+.cr-item code{background:#fdf5e8;color:#bf4e1a;padding:3px 9px;border-radius:5px;
+  font-size:.73rem;border:1px solid var(--bd)}
+
+/* ── EMPTY STATE ─────────── */
+.empty-state{text-align:center;padding:32px;color:var(--td);font-size:.84rem;line-height:1.7}
+.empty-state span{display:block;color:var(--tm);font-family:monospace;
+  font-size:.76rem;margin-top:6px}
+
+</style></head><body>
+<div class="app">
+<aside class="sb">
+<div class="sb-head">
+<div class="sb-title">판타지 소설</div>
+<span class="gb gb-violet">판타지</span>
+</div>
+<div class="sb-prog">
+<div class="sp-row"><span>집필 진행</span><span class="sp-val">0화 / 50화</span></div>
+<div class="sp-bg"><div class="sp-fill" style="width:0.0%"></div></div>
+</div>
+<div class="toc-scroll"><details class="toc-group"><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">① 기획</span><span class="step-todo">미완</span></summary><div class="toc-body"><div class="toc-info-row"><span class="ti-k">제목</span><span class="ti-v dim">미설정</span></div><div class="toc-info-row"><span class="ti-k">장르</span><span class="ti-v dim">미설정</span></div><div class="toc-info-row"><span class="ti-k">목표</span><span class="ti-v">50화 · 3,000자/화</span></div><a class="toc-ch" data-goto="overview">→ 전반 현황 보기</a></div></details><details class="toc-group"><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">② 세계관</span><span class="step-todo">미완</span></summary><div class="toc-body"><div class="toc-info-row"><span class="ti-k">세계</span><span class="ti-v dim">미설정</span></div><a class="toc-ch" data-goto="world">→ 세계관 설정 보기</a></div></details><details class="toc-group"><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">③ 캐릭터</span><span class="step-todo">미완</span></summary><div class="toc-body"><div class="toc-empty">캐릭터 미설정</div><a class="toc-ch" data-goto="chars">→ 캐릭터 설정 보기</a></div></details><details class="toc-group"><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">④ 줄거리</span><span class="step-todo">미완</span></summary><div class="toc-body"><div class="toc-empty">플롯 미설정</div><a class="toc-ch" data-goto="plot">→ 줄거리 설정 보기</a></div></details><details class="toc-group" open><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">⑤ 집필  0/50화</span></summary><div class="toc-body"><a class="toc-ch ch-next" data-goto="chapters">✏️ 1화 <span class="ch-next-badge">다음</span></a>
+<a class="toc-ch ch-todo" data-goto="chapters">○ 2화</a>
+<a class="toc-ch ch-todo" data-goto="chapters">○ 3화</a>
+<a class="toc-ch ch-todo" data-goto="chapters">○ 4화</a>
+<div class="toc-more">… 총 50화</div></div></details><details class="toc-group"><summary class="toc-hd"><span class="toc-arr">▶</span><span class="toc-step-label">⑥ 출력</span><span class="step-todo">미완</span></summary><div class="toc-body"><div class="toc-info-row"><span class="ti-k">파일</span><span class="ti-v dim">0개</span></div><a class="toc-ch" data-goto="output">→ 파일 내보내기</a></div></details></div>
+<div class="sb-cta">
+<button class="cta-btn" onclick="gotoTab('overview')">✏️ 1화 집필하기</button>
+<div class="cta-sub">다음에 쓸 화: 1화</div>
+</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<div class="topbar-title"><div class="updated-dot"></div>판타지 소설 집필 대시보드</div>
+<div class="topbar-r"><span>2026-04-20 14:38</span></div>
+</header>
+<nav class="tab-nav">
+<button class="tab-btn on" data-tab="overview">전반</button>
+<button class="tab-btn" data-tab="chapters">챕터</button>
+<button class="tab-btn" data-tab="chars">캐릭터</button>
+<button class="tab-btn" data-tab="world">세계관</button>
+<button class="tab-btn" data-tab="plot">줄거리</button>
+<button class="tab-btn" data-tab="output">출력</button>
+</nav>
+<div class="content">
+<div id="pane-overview" class="tab-pane on">
+<div class="wc"><div class="wc-left"><div class="wc-label">✏️ 다음에 쓸 화</div><div class="wc-big">1화</div></div><div class="wc-right"><div class="wc-footer"><span class="wc-goal">목표 3,000자</span><code class="wc-cmd">python main.py chapter write</code></div></div></div>
+<div class="kpi-row">
+<div class="kpi ki"><div class="kpi-lb">완성 화수</div><div class="kpi-v" style="color:#bf4e1a">0<span style="font-size:1rem;font-weight:500">화</span></div><div class="kpi-s">목표 50화</div></div>
+<div class="kpi kb"><div class="kpi-lb">완성률</div><div class="kpi-v" style="color:#c87a1a">0.0<span style="font-size:.9rem">%</span></div><div class="kpi-s">50화 남음</div></div>
+<div class="kpi kg"><div class="kpi-lb">총 글자 수</div><div class="kpi-v" style="color:#4a7c59;font-size:1.45rem">0</div><div class="kpi-s">목표 150,000자</div></div>
+<div class="kpi ka"><div class="kpi-lb">평균 글자/화</div><div class="kpi-v" style="color:#6b3a1e;font-size:1.45rem">0</div><div class="kpi-s">목표 3,000자</div></div>
+<div class="kpi kp"><div class="kpi-lb">마지막 작성</div><div class="kpi-v" style="color:#c44a38;font-size:1.15rem;padding-top:5px">—</div><div class="kpi-s">—</div></div>
+</div>
+<div class="g2">
+<div class="card"><div class="ch"><span class="ct2">완성률</span></div><div id="c-radial" class="chart-box"></div></div>
+<div class="card"><div class="ch"><span class="ct2">화수별 글자 수</span><span class="cs">단위: 자</span></div><div id="c-bar" class="chart-box"></div></div>
+</div>
+<div class="card"><div class="ch"><span class="ct2">누적 글자 수 추이</span><span class="cs">합계 0자</span></div><div id="c-area" class="chart-box"></div></div>
+</div>
+<div id="pane-chapters" class="tab-pane">
+<div class="card"><div class="ch"><span class="ct2">챕터 목록</span><span class="cs">0화 완성</span></div>
+<table><thead><tr><th>화수</th><th>제목</th><th style="text-align:right">글자 수</th><th>작성일</th></tr></thead>
+<tbody><tr><td colspan="4" class="empty-cell">아직 작성된 챕터가 없습니다</td></tr></tbody></table></div>
+<div class="card"><div class="ch"><span class="ct2">화수별 글자 수</span></div><div id="c-bar2" class="chart-box"></div></div>
+</div>
+<div id="pane-chars" class="tab-pane">
+<div class="card"><div class="ch"><span class="ct2">캐릭터</span></div>
+<div class="chars-grid"><div class="empty-state">캐릭터 정보가 없습니다<span>data/characters/characters_template.json 을 수정하세요</span></div></div></div>
+</div>
+<div id="pane-world" class="tab-pane">
+<div class="g2w">
+<div class="card"><div class="ch"><span class="ct2">세계관</span></div>
+<p class="dim-p">세계관을 설정하세요</p>
+<div class="si-grid"></div>
+<div class="tags"></div>
+</div>
+<div class="card"><div class="ch"><span class="ct2">세력 & 지리</span></div>
+</div>
+</div>
+</div>
+<div id="pane-plot" class="tab-pane"><div class="empty-state">플롯 정보가 없습니다<span>data/plot/plot_template.json 을 수정하세요</span></div></div>
+<div id="pane-output" class="tab-pane"><div class="card mb"><div class="ch"><span class="ct2">내보낸 파일</span></div><div class="file-list"><div class="empty-state">내보낸 파일이 없습니다<span>python main.py publish epub</span></div></div></div><div class="card"><div class="ch"><span class="ct2">진행률</span></div><div class="prog"><div class="prog-lbl"><span class="pn">챕터</span><span class="pv">0화 / 50화 (0.0%)</span></div><div class="prog-bg"><div class="prog-fill" style="width:0.0%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div></div><div class="prog"><div class="prog-lbl"><span class="pn">글자 수</span><span class="pv">0 / 150,000자 (0.0%)</span></div><div class="prog-bg"><div class="prog-fill" style="width:0.0%;background:linear-gradient(90deg,#be185d,#f472b6)"></div></div></div><div class="cmd-ref"><div class="cr-title">빠른 명령어</div><div class="cr-item"><code>python main.py chapter write</code><span>다음 화 작성</span></div><div class="cr-item"><code>python main.py chapter batch 1 10</code><span>연속 작성</span></div><div class="cr-item"><code>python main.py publish epub</code><span>epub 내보내기</span></div><div class="cr-item"><code>python dashboard.py</code><span>대시보드 갱신</span></div></div></div></div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.48.0/dist/apexcharts.min.js"></script>
+<script>
+
+// ── Tab switching
+function gotoTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  const btn=document.querySelector('.tab-btn[data-tab="'+name+'"]');
+  const pane=document.getElementById('pane-'+name);
+  if(btn)btn.classList.add('on');
+  if(pane)pane.classList.add('on');
+}
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>gotoTab(btn.dataset.tab));
+});
+// TOC links
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.addEventListener('click',e=>{e.preventDefault();gotoTab(el.dataset.goto);});
+});
+
+// ── Charts
+const D={"pct": 0.0, "chNums": [], "chWords": [], "cumulative": []};
+const DK={
+  chart:{background:'transparent',foreColor:'#8a6a52',
+    fontFamily:"'Inter',sans-serif",toolbar:{show:false},
+    animations:{enabled:true,easing:'easeinout',speed:700}},
+  theme:{mode:'light'},
+  grid:{borderColor:'#e4d0b8',strokeDashArray:3,padding:{left:2,right:2}},
+  tooltip:{theme:'light',style:{fontFamily:"'Inter',sans-serif"}}
+};
+
+// Radial
+new ApexCharts(document.getElementById('c-radial'),{
+  ...DK,chart:{...DK.chart,type:'radialBar',height:230},
+  series:[D.pct],
+  plotOptions:{radialBar:{hollow:{size:'60%'},
+    dataLabels:{name:{show:true,color:'#8a6a52',fontSize:'11px',offsetY:-8},
+      value:{show:true,color:'#2b1a0d',fontSize:'1.9rem',fontWeight:'800',
+        formatter:v=>v+'%',offsetY:5}},
+    track:{background:'#e4d0b8',strokeWidth:'97%'}}},
+  fill:{type:'gradient',gradient:{shade:'light',type:'horizontal',
+    gradientToColors:['#c87a1a'],stops:[0,100]}},
+  colors:['#bf4e1a'],labels:['완성률'],
+}).render();
+
+// Bar (reusable)
+function mkBar(id){
+  const el=document.getElementById(id); if(!el)return;
+  if(!D.chNums.length){
+    el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#8a6a52;font-size:.82rem">챕터 데이터가 없습니다</div>';
+    return;
+  }
+  new ApexCharts(el,{...DK,
+    chart:{...DK.chart,type:'bar',height:230},
+    series:[{name:'글자 수',data:D.chWords}],
+    xaxis:{categories:D.chNums.map(n=>n+'화'),
+      labels:{style:{colors:'#b09a84',fontSize:'10px'}},
+      axisBorder:{show:false},axisTicks:{show:false}},
+    yaxis:{labels:{style:{colors:'#6b6880',fontSize:'10px'},
+      formatter:v=>v>=1000?(v/1000).toFixed(1)+'k':v}},
+    plotOptions:{bar:{borderRadius:4,columnWidth:'55%'}},
+    colors:['#bf4e1a'],
+    fill:{type:'gradient',gradient:{shade:'light',type:'vertical',
+      gradientToColors:['#c87a1a'],stops:[0,100]}},
+    dataLabels:{enabled:false},
+  }).render();
+}
+mkBar('c-bar'); mkBar('c-bar2');
+
+// Area
+(()=>{
+  const el=document.getElementById('c-area');
+  if(!D.cumulative.length){
+    el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#8a6a52;font-size:.82rem">챕터 데이터가 없습니다</div>';
+    return;
+  }
+  new ApexCharts(el,{...DK,
+    chart:{...DK.chart,type:'area',height:200},
+    series:[{name:'누적 글자 수',data:D.cumulative}],
+    xaxis:{categories:D.chNums.map(n=>n+'화'),
+      labels:{style:{colors:'#b09a84',fontSize:'10px'}},
+      axisBorder:{show:false},axisTicks:{show:false}},
+    yaxis:{labels:{style:{colors:'#6b6880',fontSize:'10px'},
+      formatter:v=>v>=1000?Math.round(v/1000)+'k':v}},
+    stroke:{curve:'smooth',width:2},
+    fill:{type:'gradient',gradient:{shadeIntensity:1,opacityFrom:.2,opacityTo:0,stops:[0,90]}},
+    colors:['#c87a1a'],dataLabels:{enabled:false},
+    markers:{size:D.chNums.length<=12?4:0,colors:['#c87a1a'],
+      strokeColors:'#fff',strokeWidth:2},
+  }).render();
+})();
+
+</script></body></html>

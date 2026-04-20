@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python main.py --help)",
+      "Bash(python -c \"import main\")",
+      "Bash(set PYTHONIOENCODING=utf-8)",
+      "Bash(python main.py my --help)"
+    ]
+  }
+}

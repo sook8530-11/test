@@ -1,0 +1,47 @@
+{
+  "_guide": "주인공과 조연 캐릭터를 직접 입력하세요. 캐릭터 수는 자유롭게 늘리거나 줄일 수 있습니다.",
+
+  "main_characters": [
+    {
+      "name": "주인공 이름",
+      "age": 20,
+      "role": "주인공",
+      "appearance": "외모 묘사 (머리색, 눈색, 키, 특징적인 외모 등)",
+      "personality": "성격 (예: 정의감 강하고 충동적이지만 타인을 위해 희생할 줄 아는)",
+      "background": "출생과 성장 배경. 어디서 태어났고 어떻게 살아왔는지.",
+      "motivation": "이 캐릭터가 행동하는 이유, 궁극적인 목표",
+      "abilities": ["능력 1", "능력 2", "능력 3"],
+      "weakness": "약점 또는 내면의 갈등 (캐릭터를 입체적으로 만드는 요소)",
+      "relationships": {
+        "다른 캐릭터 이름": "관계 설명 (예: 어릴 때부터 함께한 절친, 현재는 라이벌 관계)"
+      },
+      "character_arc": "이 캐릭터가 소설이 끝날 때 어떻게 성장하거나 변화할지"
+    },
+    {
+      "name": "두 번째 주인공 또는 히로인 이름",
+      "age": 19,
+      "role": "히로인",
+      "appearance": "",
+      "personality": "",
+      "background": "",
+      "motivation": "",
+      "abilities": [],
+      "weakness": "",
+      "relationships": {},
+      "character_arc": ""
+    }
+  ],
+  "sub_characters": [
+    {
+      "name": "조연 이름",
+      "age": 35,
+      "role": "조연 역할 (예: 스승, 조력자, 적대자)",
+      "appearance": "",
+      "personality": "",
+      "background": "",
+      "motivation": "",
+      "abilities": [],
+      "relationship_to_main": "주인공과의 관계"
+    }
+  ]
+}

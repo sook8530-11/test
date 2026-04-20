@@ -1,0 +1,58 @@
+{
+  "_guide": "플롯을 직접 입력하세요. chapter_outlines는 최소 몇 화의 방향만 잡아도 됩니다. AI가 나머지를 채울 수 있습니다.",
+
+  "title": "소설 제목",
+  "logline": "한 줄 요약 (예: 마법이 금지된 세계에서 최강의 마법사로 각성한 소년의 이야기)",
+  "synopsis": "전체 줄거리 요약. 어떻게 시작해서 어떻게 끝나는지. 주요 반전이나 클라이맥스도 포함하세요.",
+  "arcs": [
+    {
+      "arc_number": 1,
+      "arc_name": "1아크 이름 (예: 각성)",
+      "chapters": "1-15",
+      "description": "이 아크에서 일어나는 일",
+      "key_events": [
+        "주요 사건 1",
+        "주요 사건 2"
+      ],
+      "character_development": "이 아크에서 주인공이 어떻게 성장하는지"
+    },
+    {
+      "arc_number": 2,
+      "arc_name": "2아크 이름 (예: 시련)",
+      "chapters": "16-35",
+      "description": "",
+      "key_events": [],
+      "character_development": ""
+    },
+    {
+      "arc_number": 3,
+      "arc_name": "3아크 이름 (예: 결전)",
+      "chapters": "36-50",
+      "description": "",
+      "key_events": [],
+      "character_development": ""
+    }
+  ],
+  "chapter_outlines": [
+    {
+      "chapter": 1,
+      "title": "1화 제목",
+      "arc": 1,
+      "summary": "1화에서 일어나는 일. 어떤 장면으로 시작하고 무엇이 발생하는지.",
+      "key_scene": "이 화에서 가장 중요한 장면 한 줄 설명",
+      "emotional_tone": "이 화의 감정적 분위기 (예: 설렘과 불안이 공존하는)",
+      "ending_hook": "다음 화가 궁금해지도록 어떻게 끝낼지"
+    },
+    {
+      "chapter": 2,
+      "title": "2화 제목",
+      "arc": 1,
+      "summary": "",
+      "key_scene": "",
+      "emotional_tone": "",
+      "ending_hook": ""
+    }
+  ],
+  "climax_chapter": 45,
+  "resolution": "결말 방향. 어떤 결말을 원하는지 (해피엔딩/비극/열린결말 등)"
+}
