@@ -1,20 +1,22 @@
 {
-  "title": "소설 제목을 입력하세요",
-  "genre": "판타지",
+  "title": "안티-로그: 결함의 역습",
+  "subtitle": "ANTI-LOG",
+  "author": "주디·AI",
+  "genre": "SF판타지",
   "target_chapters": 50,
   "words_per_chapter": 3000,
-  "writing_style": "3인칭 시점, 문어체, 생동감 있는 묘사",
-  "tone": "웅장하고 서사적인 분위기",
-  "themes": ["성장", "모험", "우정", "선과 악의 대결"],
+  "writing_style": "3인칭 시점, 간결하고 긴장감 있는 문체, 기술 용어와 마법 묘사 혼합",
+  "tone": "다크하고 미스터리한 분위기, 고독과 대결의 서사",
+  "themes": ["결함의 역설", "기술과 마법의 충돌", "정체성과 각성", "숨겨진 진실과 배신"],
   "world_setting": {
-    "era": "중세 판타지",
-    "magic_system": "원소 마법",
-    "geography": "대륙 기반"
+    "era": "기술과 마법이 공존하는 근미래",
+    "magic_system": "코드와 마법이 결합된 '로그 마법' 체계",
+    "geography": "모니터와 데이터가 공간을 지배하는 디지털-물리 혼합 세계"
   },
   "chapter_structure": {
-    "opening": "장면 묘사 또는 대화로 시작",
-    "rising_action": "갈등 심화",
-    "climax": "긴장감 최고조",
-    "resolution": "다음 화 복선"
+    "opening": "장면 묘사 또는 긴장감 있는 대화로 시작",
+    "rising_action": "갈등 심화 및 비밀 단서 노출",
+    "climax": "긴장감 최고조 — 반전 또는 대결",
+    "resolution": "다음 화 복선과 새로운 의문 제시"
   }
 }
